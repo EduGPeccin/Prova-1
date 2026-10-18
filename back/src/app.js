@@ -1,12 +1,16 @@
 
 const express = require("express");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./config/swagger");
 
 const authRoutes = require("./routes/auth.routes");
 const publicRoutes = require("./routes/public.routes");
 const protectedRoutes = require("./routes/protected.routes");
 
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Habilita o CORS
 app.use(cors());
