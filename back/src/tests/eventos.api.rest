@@ -1,0 +1,47 @@
+@baseURL = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGlmcnMuZWR1LmJyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkyMzU5Nzc5LCJleHAiOjE3OTIzNjMzNzl9.6SeIAbO8S13kRuFlqQL9AZ7pY9WNGVtMZqqo60aJHj0
+@id = 2
+
+### Listar eventos
+GET {{baseURL}}/protected/events
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Buscar evento por ID
+GET {{baseURL}}/protected/events/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Criar evento
+POST {{baseURL}}/protected/events
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "Ação Solidária",
+  "descricao": "Atividade de voluntariado comunitário",
+  "data_evento": "2026-11-20 09:00:00",
+  "local": "IFRS",
+  "horario": "09:00:00",
+  "vagas": 30,
+  "status": "Planejado"
+}
+
+### Alterar evento
+PUT {{baseURL}}/protected/events/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "Ação Solidária Atualizada",
+  "descricao": "Atividade comunitária atualizada",
+  "data_evento": "2026-11-21 10:00:00",
+  "local": "IFRS - Campus",
+  "horario": "10:00:00",
+  "vagas": 40,
+  "status": "Planejado"
+}
+
+### Excluir evento
+DELETE {{baseURL}}/protected/events/{{id}}
+Authorization: Bearer {{token}}

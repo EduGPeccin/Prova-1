@@ -1,0 +1,72 @@
+@baseURL = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGlmcnMuZWR1LmJyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkyMzMxMDE0LCJleHAiOjE3OTIzMzQ2MTR9.YrfIsKP5CTrCr0ZVwnXkH-q9RSOCiRq-BMENq2IZQSM
+@id = 2
+
+### Rota pública (acesso livre)
+GET {{baseURL}}/public/home
+Content-Type: application/json
+
+### Cadastro de novo usuário
+POST {{baseURL}}/auth/register
+Content-Type: application/json
+
+{
+ "nome": "Novo Voluntário",
+ "email": "novo@ifrs.edu.br",
+ "password": "senha123",
+ "role": "user",
+ "telefone": "123456789",
+ "curso": "Ciência da Computação"
+}
+
+### Login do novo usuário (pegar o token gerado abaixo)
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+ "email": "novo@ifrs.edu.br",
+ "password": "senha123"
+}
+
+### Login do administrador (usuário já existente no banco)
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+ "email": "admin@ifrs.edu.br",
+ "password": "admin123"
+}
+
+### Acesso ao painel (rota protegida, requer token de qualquer usuário autenticado)
+GET {{baseURL}}/protected/dashboard
+Authorization: Bearer {{token}}
+
+### Acesso à área admin (rota protegida, requer token de usuário com role "admin")
+GET {{baseURL}}/protected/admin
+Authorization: Bearer {{token}}
+
+
+### listar voluntários
+GET {{baseURL}}/protected/voluntarios
+Authorization: Bearer {{token}}
+
+### buscar voluntário por ID
+GET {{baseURL}}/protected/voluntarios/{{id}}
+Authorization: Bearer {{token}}
+
+
+### alterar voluntário
+PUT {{baseURL}}/protected/voluntarios/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Voluntário Atualizado",
+  "email": "atualizado@ifrs.edu.br",
+  "telefone": "54988888888",
+  "curso": "Sistemas de Informação"
+}
+
+### excluir voluntário
+DELETE {{baseURL}}/protected/voluntarios/{{id}}
+Authorization: Bearer {{token}}
