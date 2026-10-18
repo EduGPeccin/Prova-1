@@ -1,11 +1,20 @@
 const VoluntariosModel = require("../models/VoluntariosModel");
 
 /**
- * Controller responsável pelas operações de voluntários.
+ * Controller responsável por receber e responder às requisições HTTP
+ * relacionadas aos voluntários.
+ *
+ * @class VoluntariosController
  */
 class VoluntariosController {
   /**
    * Lista todos os voluntários.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise<void>}
    */
   static async listar(req, res) {
     try {
@@ -22,6 +31,12 @@ class VoluntariosController {
 
   /**
    * Busca um voluntário pelo ID.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise<void>}
    */
   static async buscarPorId(req, res) {
     try {
@@ -52,6 +67,12 @@ class VoluntariosController {
 
   /**
    * Altera os dados de um voluntário.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise<void>}
    */
   static async alterar(req, res) {
     try {
@@ -107,6 +128,12 @@ class VoluntariosController {
 
   /**
    * Exclui um voluntário.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise<void>}
    */
   static async excluir(req, res) {
     try {

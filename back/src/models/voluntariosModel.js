@@ -2,11 +2,20 @@
 const db = require("../config/database");
 
 /**
- * Model responsável pelo acesso à tabela voluntarios.
+ * Model responsável pelo acesso à tabela `voluntarios` no MySQL.
+ *
+ * Centraliza as operações de consulta, criação, atualização e exclusão
+ * de registros de voluntários.
+ *
+ * @class VoluntariosModel
  */
 class VoluntariosModel {
   /**
-   * Lista todos os voluntários.
+   * Lista todos os voluntários cadastrados.
+   *
+   * @async
+   * @static
+   * @returns {Promise<Array<Object>>} Lista de voluntários.
    */
   static async findAll() {
     const [rows] = await db.query(
@@ -20,6 +29,11 @@ class VoluntariosModel {
 
   /**
    * Busca um voluntário pelo ID.
+   *
+   * @async
+   * @static
+   * @param {number} id - O ID do voluntário a ser buscado.
+   * @returns {Promise<Object|null>} O voluntário encontrado ou null se não encontrado.
    */
   static async findById(id) {
     const [rows] = await db.query(
@@ -34,6 +48,11 @@ class VoluntariosModel {
 
   /**
    * Busca um voluntário pelo e-mail.
+   *
+   * @async
+   * @static
+   * @param {string} email - O e-mail do voluntário a ser buscado.
+   * @returns {Promise<Object|null>} O voluntário encontrado ou null se não encontrado.
    */
   static async findByEmail(email) {
     const [rows] = await db.query(
@@ -47,6 +66,12 @@ class VoluntariosModel {
 
   /**
    * Altera os dados de um voluntário.
+   *
+   * @async
+   * @static
+   * @param {number} id - O ID do voluntário a ser atualizado.
+   * @param {Object} voluntario - Os novos dados do voluntário.
+   * @returns {Promise<boolean>} true se o voluntário foi atualizado, false caso contrário.
    */
   static async update(id, voluntario) {
     const { nome, email, telefone, curso } = voluntario;
@@ -63,6 +88,11 @@ class VoluntariosModel {
 
   /**
    * Exclui um voluntário pelo ID.
+   *
+   * @async
+   * @static
+   * @param {number} id - O ID do voluntário a ser excluído.
+   * @returns {Promise<boolean>} true se o voluntário foi excluído, false caso contrário.
    */
   static async delete(id) {
     const [result] = await db.query(

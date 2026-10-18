@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/voluntarios.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/voluntarios.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const VoluntariosModel = require("../models/VoluntariosModel");
+
+/**
+ * Controller responsável por receber e responder às requisições HTTP
+ * relacionadas aos voluntários.
+ *
+ * @class VoluntariosController
+ */
+class VoluntariosController {
+  /**
+   * Lista todos os voluntários.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise&lt;void>}
+   */
+  static async listar(req, res) {
+    try {
+      const voluntarios = await VoluntariosModel.findAll();
+
+      return res.status(200).json(voluntarios);
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao listar voluntários.",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * Busca um voluntário pelo ID.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise&lt;void>}
+   */
+  static async buscarPorId(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!Number.isInteger(Number(id)) || Number(id) &lt;= 0) {
+        return res.status(400).json({
+          message: "ID inválido.",
+        });
+      }
+
+      const voluntario = await VoluntariosModel.findById(Number(id));
+
+      if (!voluntario) {
+        return res.status(404).json({
+          message: "Voluntário não encontrado.",
+        });
+      }
+
+      return res.status(200).json(voluntario);
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao buscar voluntário.",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * Altera os dados de um voluntário.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise&lt;void>}
+   */
+  static async alterar(req, res) {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id &lt;= 0) {
+        return res.status(400).json({
+          message: "ID inválido.",
+        });
+      }
+
+      const { nome, email, telefone, curso } = req.body;
+
+      if (!nome || !email || !telefone || !curso) {
+        return res.status(400).json({
+          message: "Preencha todos os campos obrigatórios.",
+        });
+      }
+
+      const voluntario = await VoluntariosModel.findById(id);
+
+      if (!voluntario) {
+        return res.status(404).json({
+          message: "Voluntário não encontrado.",
+        });
+      }
+
+      const emailExistente = await VoluntariosModel.findByEmail(email);
+
+      if (emailExistente &amp;&amp; Number(emailExistente.id) !== id) {
+        return res.status(409).json({
+          message: "Este e-mail já está cadastrado.",
+        });
+      }
+
+      await VoluntariosModel.update(id, {
+        nome,
+        email,
+        telefone,
+        curso,
+      });
+
+      return res.status(200).json({
+        message: "Voluntário atualizado com sucesso.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao atualizar voluntário.",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * Exclui um voluntário.
+   *
+   * @async
+   * @static
+   * @param {Object} req - O objeto da requisição HTTP.
+   * @param {Object} res - O objeto da resposta HTTP.
+   * @returns {Promise&lt;void>}
+   */
+  static async excluir(req, res) {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id &lt;= 0) {
+        return res.status(400).json({
+          message: "ID inválido.",
+        });
+      }
+
+      const voluntario = await VoluntariosModel.findById(id);
+
+      if (!voluntario) {
+        return res.status(404).json({
+          message: "Voluntário não encontrado.",
+        });
+      }
+
+      await VoluntariosModel.delete(id);
+
+      return res.status(200).json({
+        message: "Voluntário excluído com sucesso.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao excluir voluntário.",
+        error: error.message,
+      });
+    }
+  }
+}
+
+module.exports = VoluntariosController;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventosController.html">EventosController</a></li><li><a href="EventosModel.html">EventosModel</a></li><li><a href="VoluntariosController.html">VoluntariosController</a></li><li><a href="VoluntariosModel.html">VoluntariosModel</a></li><li><a href="VoluntariosService.html">VoluntariosService</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Oct 18 2026 20:11:38 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
