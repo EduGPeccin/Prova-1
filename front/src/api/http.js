@@ -18,7 +18,7 @@ http.interceptors.response.use(
       // Estratégia simples: limpar sessão e recarregar login
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      // Evite chamar hooks aqui. Use redirect imperativo.
+      // Evite chamar hooks aqui. Use redirect imperativo;
       if (window.location.pathname !== "/login") {
         window.location.assign("/login");
       }

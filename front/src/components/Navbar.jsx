@@ -1,29 +1,60 @@
-// Importamos o Link para navegação entre rotas
-// e o hook de autenticação para exibir login/logout dinamicamente
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+
 export default function Navbar() {
-    const { user, logout } = useAuth();
-    return (
-        <header className="navbar">
-            <nav className="navbar-inner">
-                {/* brand separado da lista de links */}
-                <div className="brand">CorpApps</div>
-                <ul className="nav-links">
-                    <li><NavLink to="/" end className={({ isActive }) => isActive ?
-                        "active" : ""}>Home</NavLink></li>
-                    <li><NavLink to="/about">About</NavLink></li>
-                    {!user && <li><NavLink to="/login">Login</NavLink></li>}
-                    {user && (
-                        <>
-                            <li><NavLink to="/dashboard">Dashboard</NavLink></li>
-                            {user.role === "admin" && <li><NavLink
-                                to="/admin">Admin</NavLink></li>}
-                            <li><button className="btn" onClick={logout}>Logout</button></li>
-                        </>
-                    )}
-                </ul>
-            </nav>
-        </header>
-    );
+  const { token, user, logout } = useAuth();
+
+  return (
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <NavLink to="/" className="brand">
+          Voluntariado IFRS
+        </NavLink>
+
+        <ul className="nav-links">
+          <li>
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+          </li>
+
+          {token && (
+            <>
+              <li>
+                <NavLink to="/dashboard">Dashboard</NavLink>
+              </li>
+              <li>
+                <NavLink to="/voluntarios">Voluntários</NavLink>
+              </li>
+              <li>
+                <NavLink to="/eventos">Eventos</NavLink>
+              </li>
+            </>
+          )}
+
+          {token && user?.role === "admin" && (
+            <li>
+              <NavLink to="/admin">Administração</NavLink>
+            </li>
+          )}
+
+          {!token ? (
+            <li>
+              <NavLink to="/login">Entrar</NavLink>
+            </li>
+          ) : (
+            <li>
+              <button
+                type="button"
+                className="btn"
+                onClick={logout}
+              >
+                Sair
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+    </nav>
+  );
 }

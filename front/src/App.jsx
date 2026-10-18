@@ -1,37 +1,43 @@
-// Roteador principal: define rotas públicas, protegidas e o layout base.
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import { AuthProvider } from "./auth/AuthContext";
 import RequireAuth from "./auth/RequireAuth";
 import RequireRole from "./auth/RequireRole";
+
 import RootLayout from "./layouts/RootLayout";
+
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Forbidden from "./pages/Forbidden";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
-// (Opcional) Fallback simples para rotas inexistentes
+import Voluntarios from "./pages/Voluntarios";
+import Eventos from "./pages/Eventos";
+
 function NotFound() {
   return (
     <main className="container">
       <h1>404 — Página não encontrada</h1>
-      <p>Verifique a URL ou volte para a Home.</p>
+      <p>Verifique a URL ou volte para a página inicial.</p>
     </main>
   );
 }
-// Árvore de rotas aninhadas sob o RootLayout.
-// O <Outlet /> do RootLayout renderiza os filhos declarados em "children".
+
 const router = createBrowserRouter([
   {
-    path: "/", element: <RootLayout />,
-    errorElement: <NotFound />, // opcional
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <NotFound />,
     children: [
-      // públicas
+      // Rotas públicas
       { index: true, element: <Home /> },
       { path: "about", element: <About /> },
       { path: "login", element: <Login /> },
       { path: "forbidden", element: <Forbidden /> },
-      // protegida por autenticação (token)
+
+      // Dashboard: exige autenticação
       {
         path: "dashboard",
         element: (
@@ -40,7 +46,28 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-      // protegida por autenticação + papel específico (admin)
+
+      // Voluntários: consulta para usuários autenticados
+      {
+        path: "voluntarios",
+        element: (
+          <RequireAuth>
+            <Voluntarios />
+          </RequireAuth>
+        ),
+      },
+
+      // Eventos: consulta para usuários autenticados
+      {
+        path: "eventos",
+        element: (
+          <RequireAuth>
+            <Eventos />
+          </RequireAuth>
+        ),
+      },
+
+      // Área administrativa: exige papel admin
       {
         path: "admin",
         element: (
@@ -51,14 +78,14 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-      // fallback interno (opcional)
+
+      // Página não encontrada
       { path: "*", element: <NotFound /> },
     ],
   },
 ]);
+
 export default function App() {
-  // O AuthProvider envolve o Router para que todas as rotas
-  // tenham acesso a user/token/login/logout via contexto.
   return (
     <AuthProvider>
       <RouterProvider router={router} />
