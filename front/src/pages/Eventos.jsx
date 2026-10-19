@@ -99,7 +99,7 @@ export default function Eventos() {
     setEditando(evento.id);
 
     setForm({
-      titulo: evento.titulo ?? evento.nome ?? "",
+      titulo: evento.titulo ?? evento.titulo ?? "",
       descricao: evento.descricao ?? "",
       data_evento: evento.data_evento
         ? String(evento.data_evento).slice(0, 10)
@@ -312,7 +312,7 @@ export default function Eventos() {
             <tbody>
               {eventos.map((evento) => (
                 <tr key={evento.id}>
-                  <td>{evento.titulo ?? evento.nome}</td>
+                  <td>{evento.titulo ?? evento.titulo}</td>
                   <td>
                     {(evento.data_evento ?? evento.data)
                       ? String(
