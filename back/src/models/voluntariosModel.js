@@ -1,4 +1,3 @@
-
 const db = require("../config/database");
 
 /**
@@ -21,7 +20,7 @@ class VoluntariosModel {
     const [rows] = await db.query(
       `SELECT id, nome, email, role, telefone, curso
        FROM voluntarios
-       ORDER BY id DESC`
+       ORDER BY id DESC`,
     );
 
     return rows;
@@ -40,7 +39,7 @@ class VoluntariosModel {
       `SELECT id, nome, email, role, telefone, curso
        FROM voluntarios
        WHERE id = ?`,
-      [id]
+      [id],
     );
 
     return rows[0];
@@ -55,15 +54,31 @@ class VoluntariosModel {
    * @returns {Promise<Object|null>} O voluntário encontrado ou null se não encontrado.
    */
   static async findByEmail(email) {
-    const [rows] = await db.query(
-      "SELECT * FROM voluntarios WHERE email = ?",
-      [email]
-    );
+    const [rows] = await db.query("SELECT * FROM voluntarios WHERE email = ?", [
+      email,
+    ]);
 
     return rows[0];
   }
 
+  static async create(voluntario) {
+    const { nome, email, password, role, telefone, curso } = voluntario;
 
+    const [result] = await db.query(
+      `INSERT INTO voluntarios (nome, email, password, role, telefone, curso)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+      [nome, email, password, role, telefone, curso],
+    );
+
+    return {
+      id: result.insertId,
+      nome,
+      email,
+      role,
+      telefone,
+      curso,
+    };
+  }
   /**
    * Altera os dados de um voluntário.
    *
@@ -80,7 +95,7 @@ class VoluntariosModel {
       `UPDATE voluntarios
        SET nome = ?, email = ?, telefone = ?, curso = ?
        WHERE id = ?`,
-      [nome, email, telefone, curso, id]
+      [nome, email, telefone, curso, id],
     );
 
     return result.affectedRows > 0;
@@ -95,10 +110,9 @@ class VoluntariosModel {
    * @returns {Promise<boolean>} true se o voluntário foi excluído, false caso contrário.
    */
   static async delete(id) {
-    const [result] = await db.query(
-      "DELETE FROM voluntarios WHERE id = ?",
-      [id]
-    );
+    const [result] = await db.query("DELETE FROM voluntarios WHERE id = ?", [
+      id,
+    ]);
 
     return result.affectedRows > 0;
   }

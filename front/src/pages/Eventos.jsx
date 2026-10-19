@@ -3,12 +3,13 @@ import { http } from "../api/http";
 import { useAuth } from "../auth/AuthContext";
 
 const formularioInicial = {
-  nome: "",
+  titulo: "",
   descricao: "",
-  data: "",
+  data_evento: "",
   local: "",
+  horario: "",
   vagas: 1,
-  status: "Aberto",
+  status: "Planejado",
 };
 
 export default function Eventos() {
@@ -16,7 +17,7 @@ export default function Eventos() {
   const isAdmin = user?.role === "admin";
 
   const [eventos, setEventos] = useState([]);
-  const [form, setForm] = useState(formularioInicial);
+  const [form, setForm] = useState({ ...formularioInicial });
   const [editando, setEditando] = useState(null);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
@@ -77,6 +78,7 @@ export default function Eventos() {
     }
   }
 
+  // Atualiza o campo alterado no formulário.
   function atualizarCampo(event) {
     const { name, value } = event.target;
 
@@ -86,29 +88,35 @@ export default function Eventos() {
     }));
   }
 
+  // Limpa o formulário e encerra o modo de edição.
   function limparFormulario() {
     setForm({ ...formularioInicial });
     setEditando(null);
   }
 
+  // Preenche o formulário com os dados do evento selecionado.
   function iniciarEdicao(evento) {
     setEditando(evento.id);
 
     setForm({
-      nome: evento.nome ?? "",
+      titulo: evento.titulo ?? evento.nome ?? "",
       descricao: evento.descricao ?? "",
-      data: evento.data
-        ? String(evento.data).slice(0, 10)
-        : "",
+      data_evento: evento.data_evento
+        ? String(evento.data_evento).slice(0, 10)
+        : evento.data
+          ? String(evento.data).slice(0, 10)
+          : "",
       local: evento.local ?? "",
+      horario: evento.horario ?? "",
       vagas: evento.vagas ?? 1,
-      status: evento.status ?? "Aberto",
+      status: evento.status ?? "Planejado",
     });
 
     setMensagem("");
     setErro("");
   }
 
+  // Cadastra um novo evento ou atualiza um evento existente.
   async function salvarEvento(event) {
     event.preventDefault();
     setMensagem("");
@@ -138,6 +146,7 @@ export default function Eventos() {
     }
   }
 
+  // Exclui um evento após confirmação.
   async function excluirEvento(id) {
     if (!window.confirm("Deseja realmente excluir este evento?")) {
       return;
@@ -185,10 +194,10 @@ export default function Eventos() {
           </h2>
 
           <label>
-            Nome
+            Título
             <input
-              name="nome"
-              value={form.nome}
+              name="titulo"
+              value={form.titulo}
               onChange={atualizarCampo}
               required
             />
@@ -208,8 +217,19 @@ export default function Eventos() {
             Data
             <input
               type="date"
-              name="data"
-              value={form.data}
+              name="data_evento"
+              value={form.data_evento}
+              onChange={atualizarCampo}
+              required
+            />
+          </label>
+
+          <label>
+            Horário
+            <input
+              type="time"
+              name="horario"
+              value={form.horario}
               onChange={atualizarCampo}
               required
             />
@@ -245,8 +265,9 @@ export default function Eventos() {
               onChange={atualizarCampo}
               required
             >
-              <option value="Aberto">Aberto</option>
-              <option value="Encerrado">Encerrado</option>
+              <option value="Planejado">Planejado</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Concluído">Concluído</option>
               <option value="Cancelado">Cancelado</option>
             </select>
           </label>
@@ -278,8 +299,9 @@ export default function Eventos() {
           <table>
             <thead>
               <tr>
-                <th>Nome</th>
+                <th>Título</th>
                 <th>Data</th>
+                <th>Horário</th>
                 <th>Local</th>
                 <th>Vagas</th>
                 <th>Status</th>
@@ -290,12 +312,15 @@ export default function Eventos() {
             <tbody>
               {eventos.map((evento) => (
                 <tr key={evento.id}>
-                  <td>{evento.nome}</td>
+                  <td>{evento.titulo ?? evento.nome}</td>
                   <td>
-                    {evento.data
-                      ? String(evento.data).slice(0, 10)
+                    {(evento.data_evento ?? evento.data)
+                      ? String(
+                          evento.data_evento ?? evento.data
+                        ).slice(0, 10)
                       : "—"}
                   </td>
+                  <td>{evento.horario ?? "—"}</td>
                   <td>{evento.local}</td>
                   <td>{evento.vagas}</td>
                   <td>{evento.status}</td>
